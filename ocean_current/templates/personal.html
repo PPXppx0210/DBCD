@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>个人中心</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            padding-top: 70px; /* 导航栏的高度 */
+        }
+        .sidebar {
+            padding: 20px;
+        }
+        .content {
+            padding: 20px;
+        }
+        .container-fluid .col-md-8 {
+            width: 60%;
+            margin-top: -20px;
+        }
+        .container-fluid .col-md-4 {
+            width: 40%;
+            margin-top: -20px;
+        }
+        .more_style {
+            float: right; 
+            color: #000000;
+        }
+        .navbar-custom {
+            background-color: #2a48ce; /* 海洋的浅蓝色 */
+            border-color: #2a48ce;
+        }
+        .navbar-custom .navbar-brand,
+        .navbar-custom .navbar-nav > li > a {
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/home">洋流洞察</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a href="/dataimport">数据导入</a></li>
+                <li><a href="/datasearch">数据查询</a></li>
+                <li><a href="/dataanalyse">数据分析</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/personal"><span class="glyphicon glyphicon-user"></span> 个人中心</a></li>
+                <li><a href="{% url 'logout' %}"><span class="glyphicon glyphicon-log-out"></span> 退出登录</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2>个人中心</h2>
+
+        <!-- 显示当前用户信息 -->
+        <div class="well">
+            <p><strong>用户名:</strong> {{ user.Username }}</p>
+            <p><strong>身份:</strong> {{ user.Identity }}</p>
+            <p><strong>真实姓名:</strong> {{ user.Name }}</p>
+            <p><strong>性别:</strong> {{ user.Gender }}</p>
+            <p><strong>身份证号:</strong> {{ user.IDCard }}</p>
+            <p><strong>手机号码:</strong> {{ user.PhoneNumber }}</p>
+            <p><strong>电子邮箱:</strong> {{ user.Email }}</p>
+        </div>
+
+        <!-- 消息显示区域 -->
+        {% if messages %}
+            <div class="alert alert-success" role="alert">
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <h2>编辑资料</h2>
+        <!-- 显示更新信息表单 -->
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">更新信息</button>
+        </form>
+    </div>
+    
+</body>
+</html>

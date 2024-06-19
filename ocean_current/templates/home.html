@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	<style type="text/css">
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            margin: 0;
+            font-family: "微软雅黑";
+        }
+        #allmap {
+            width: 100%;
+            height: 500px; /* 设置固定高度 */
+        }
+    </style>
+	<script type="text/javascript" src="//api.map.baidu.com/api?type=webgl&v=1.0&ak=MWLKWPzwP17sbdx1yobcVIH3V2IX8X91"></script>
+    <title>主页</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            padding-top: 70px; /* 导航栏的高度 */
+        }
+        .sidebar {
+            padding: 20px;
+        }
+        .content {
+            padding: 20px;
+        }
+        .container-fluid .col-md-8 {
+            width: 60%;
+            margin-top: -20px;
+        }
+        .container-fluid .col-md-4 {
+            width: 40%;
+            margin-top: -20px;
+        }
+        .more_style {
+            float: right; 
+            color: #000000;
+        }
+        .navbar-custom {
+            background-color: #2a48ce; /* 海洋的浅蓝色 */
+            border-color: #2a48ce;
+        }
+        .navbar-custom .navbar-brand,
+        .navbar-custom .navbar-nav > li > a {
+            color: #ffffff;
+        }
+        .record-title {
+            color: #000000; 
+        }
+        .record-date {
+            float: right; 
+            color: #000000;
+        }
+        .news-list li {
+            margin-bottom: 10px; 
+            line-height: 1.5; 
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/home">洋流洞察</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a href="/dataimport">数据导入</a></li>
+                <li><a href="/datasearch">数据查询</a></li>
+                <li><a href="/dataanalyse">数据分析</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/personal"><span class="glyphicon glyphicon-user"></span> 个人中心</a></li>
+                <li><a href="{% url 'logout' %}"><span class="glyphicon glyphicon-log-out"></span> 退出登录</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 主体内容 -->
+    <div class="container-fluid">
+        <div class="row">
+            <!-- 左侧栏 -->
+            <div class="col-md-8 sidebar">
+                <!-- <h3>全球洋流模式图</h3>
+                {% load static %}
+                <img src="{% static 'img/home1.jpg' %}" class="img-responsive" alt="全球洋流模式图"> -->
+                <div id="allmap"></div>
+            </div>
+            <!-- 右侧栏 -->
+            <div class="col-md-4 content">
+                <h3>综合资讯</h3>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        知识科普
+                        <a href="#" class="more_style">
+                            <span class="glyphicon glyphicon-option-horizontal"></span> 查看更多
+                        </a>
+                    </div>
+                    <div class="panel-body">
+                        <ul class="news-list">
+                            <li>
+                                <a href="/home/formation" target="_blank" class="record-title">
+                                    洋流的形成
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/home/classification" target="_blank" class="record-title">
+                                    洋流的分类
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/home/impact" target="_blank" class="record-title">
+                                    洋流的意义与影响
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/home/mainoc" target="_blank" class="record-title">
+                                    主要洋流
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <h3 style="padding-top: 30px;">网站说明</h3>
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <ul class="news-list">
+                            <li>
+                                感谢国家科技资源共享服务平台—国家海洋科学数据中心(https://mds.nmdis.org.cn/)提供数据支撑
+                            </li>
+                            <li>
+                                引用海洋科学大数据中心(https://msdc.qdio.ac.cn/)相关资讯
+                            </li>
+                            <li>
+                                引用百度地图开放平台(https://lbsyun.baidu.com/)提供api支持
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<!-- <script type="text/javascript">
+    // GL版命名空间为BMapGL
+	var map = new BMapGL.Map("allmap");    // 创建Map实例
+	map.centerAndZoom(new BMapGL.Point(118.5, 27.5), 1);  // 初始化地图,设置中心点坐标和地图级别
+	map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+	map.setMapType(BMAP_EARTH_MAP);      // 设置地图类型为地球模式
+</script> -->
+
+<script type="text/javascript">
+	var map = new BMapGL.Map("allmap");    // 创建Map实例
+    map.centerAndZoom(new BMapGL.Point(118.5, 27.5), 1);  // 初始化地图,设置中心点坐标和地图级别
+    map.enableScrollWheelZoom(true); 
+    map.setMapType(BMAP_SATELLITE_MAP);      // 设置地图类型为普通卫星地图模式
+
+    // 定义几个主要洋流的坐标点和颜色
+    var currents = [
+        {
+            name: "北大西洋暖流",
+            color: "red",
+            points: [
+                new BMapGL.Point(-70, 30),
+                new BMapGL.Point(-30, 45),
+                new BMapGL.Point(-10, 60)
+            ]
+        },
+        {
+            name: "加那利寒流",
+            color: "blue",
+            points: [
+                new BMapGL.Point(-15, 40),
+                new BMapGL.Point(-20, 30),
+                // new BMapGL.Point(-25, 20),
+                new BMapGL.Point(-25, 10)
+            ]
+        },
+        {
+            name: "秘鲁寒流",
+            color: "blue",
+            points: [
+                new BMapGL.Point(-75, -20),
+                new BMapGL.Point(-80, -35),
+                new BMapGL.Point(-75, -50)
+            ]
+        },
+        {
+            name: "巴西暖流",
+            color: "red",
+            points: [
+                new BMapGL.Point(-40, -20),
+                new BMapGL.Point(-55, -35),
+                new BMapGL.Point(-65, -50)
+            ]
+        },
+        {
+            name: "东澳大利亚暖流",
+            color: "red",
+            points: [
+                new BMapGL.Point(145, -10),
+                new BMapGL.Point(150, -20),
+                new BMapGL.Point(160, -30)
+            ]
+        },
+        {
+            name: "本格拉寒流",
+            color: "blue",
+            points: [
+                new BMapGL.Point(0, 0),
+                new BMapGL.Point(5, -15),
+                new BMapGL.Point(10, -30)
+            ]
+        },
+        {
+            name: "西澳大利亚寒流",
+            color: "blue",
+            points: [
+                new BMapGL.Point(115, -15),
+                new BMapGL.Point(105, -25),
+                new BMapGL.Point(110, -35)
+            ]
+        },
+        {
+            name: "西风漂流",
+            color: "blue",
+            points: [
+                new BMapGL.Point(-180, -60),
+                new BMapGL.Point(0, -60),
+                new BMapGL.Point(180, -60)
+            ]
+        },
+        {
+            name: "加利福尼亚寒流",
+            color: "blue",
+            points: [
+                new BMapGL.Point(-130, 40),
+                new BMapGL.Point(-125, 30),
+                new BMapGL.Point(-120, 20)
+            ]
+        },
+        {
+            name: "千岛寒流",
+            color: "blue",
+            points: [
+                new BMapGL.Point(180, 65),
+                new BMapGL.Point(165, 55),
+                new BMapGL.Point(155, 45)
+            ]
+        },
+        {
+            name: "日本暖流",
+            color: "red",
+            points: [
+                new BMapGL.Point(130, 20),
+                new BMapGL.Point(140, 30),
+                new BMapGL.Point(150, 40)
+            ]
+        },
+        {
+            name: "阿拉斯加暖流",
+            color: "red",
+            points: [
+                new BMapGL.Point(-130, 45),
+                new BMapGL.Point(-135, 55),
+                new BMapGL.Point(-140, 60)
+            ]
+        },
+        {
+            name: "北太平洋暖流",
+            color: "red",
+            points: [
+                new BMapGL.Point(160, 35),
+                new BMapGL.Point(170, 40),
+                new BMapGL.Point(180, 45)
+            ]
+        },
+        {
+            name: "北太平洋暖流",
+            color: "red",
+            points: [
+                new BMapGL.Point(-180, 40),
+                new BMapGL.Point(-165, 47),
+                new BMapGL.Point(-150, 54)
+            ]
+        },
+        {
+            name: "北赤道暖流",
+            color: "red",
+            points: [
+                new BMapGL.Point(-180, 10),
+                new BMapGL.Point(-135, 10),
+                new BMapGL.Point(-100, 10)
+            ]
+        },
+        {
+            name: "北赤道暖流",
+            color: "red",
+            points: [
+                new BMapGL.Point(130, 10),
+                new BMapGL.Point(155, 10),
+                new BMapGL.Point(180, 10)
+            ]
+        },
+        {
+            name: "南赤道暖流",
+            color: "red",
+            points: [
+                new BMapGL.Point(-180, -10),
+                new BMapGL.Point(-135, -10),
+                new BMapGL.Point(-90, -10)
+            ]
+        },
+        {
+            name: "南赤道暖流",
+            color: "red",
+            points: [
+                new BMapGL.Point(150, -10),
+                new BMapGL.Point(165, -10),
+                new BMapGL.Point(180, -10)
+            ]
+        }
+    ];
+
+    // 绘制洋流路径和标签
+    currents.forEach(function(current) {
+        if (current.name === "西风漂流" || current.name === "北赤道暖流" || current.name === "南赤道暖流") {
+            // 绘制西风漂流的直线
+            var polyline = new BMapGL.Polyline(current.points, {strokeColor: current.color, strokeWeight: 4, strokeOpacity: 0.7, strokeStyle: 'dashed'});
+            map.addOverlay(polyline);
+        }
+        else{
+            var curve = new BMapGL.Polyline([
+                current.points[0],
+                getBezierControlPoint(current.points[0], current.points[1]),
+                current.points[1],
+                getBezierControlPoint(current.points[1], current.points[2]),
+                current.points[2]
+            ], {strokeColor: current.color, strokeWeight: 4, strokeOpacity: 0.7, strokeStyle: 'dashed'});
+            map.addOverlay(curve);
+        }
+        
+        var label = new BMapGL.Label(current.name, {
+            position: current.points[Math.floor(current.points.length / 2)], // 在路径的中间位置添加标签
+            offset: new BMapGL.Size(10, -20)
+        });
+        label.setStyle({
+            color: "#fff",
+            fontSize: "14px",
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            border: "none",
+            padding: "2px"
+        });
+        map.addOverlay(label);
+    });
+
+    // 获取贝塞尔曲线控制点
+    function getBezierControlPoint(point1, point2) {
+        var controlPointLng = (point1.lng + point2.lng) / 2 + (point1.lat - point2.lat) / 4;
+        var controlPointLat = (point1.lat + point2.lat) / 2 + (point2.lng - point1.lng) / 4;
+        return new BMapGL.Point(controlPointLng, controlPointLat);
+    }
+
+</script>

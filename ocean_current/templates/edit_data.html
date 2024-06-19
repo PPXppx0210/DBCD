@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>修改数据</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h2>修改数据</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="field">选择字段:</label>
+                <select class="form-control" id="field" name="field">
+                    {% for field in fields %}
+                        {% if not field.is_relation and field.name != "CurrentID" %}
+                            <option value="{{ field.name }}">{{ field.verbose_name }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="value">输入新值:</label>
+                <input type="text" class="form-control" id="value" name="value" required>
+            </div>
+            <button type="submit" class="btn btn-primary">确认修改</button>
+        </form>
+        <!-- 消息显示区域 -->
+        {% if messages %}
+            <div class="alert alert-warning" role="alert">
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

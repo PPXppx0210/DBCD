@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	<!-- <style type="text/css">
+	    body, html,#allmap {width: 100%;height: 100%;overflow: hidden;margin:0;font-family:"微软雅黑";}
+	</style> -->
+    <style type="text/css">
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            margin: 0;
+            font-family: "微软雅黑";
+            overflow-y: auto;
+        }
+        #allmap {
+            width: 100%;
+            height: 420px; /* 设置固定高度 */
+        }
+    </style>
+	<script type="text/javascript" src="//api.map.baidu.com/api?type=webgl&v=1.0&ak=MWLKWPzwP17sbdx1yobcVIH3V2IX8X91"></script>
+    <title>数据查询</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            padding-top: 70px; /* 导航栏的高度 */
+        }
+        .sidebar {
+            padding: 20px;
+        }
+        .content {
+            padding: 20px;
+        }
+        .container-fluid .col-md-8 {
+            width: 60%;
+            margin-top: -20px;
+        }
+        .container-fluid .col-md-4 {
+            width: 40%;
+            margin-top: -20px;
+        }
+        .more_style {
+            float: right; 
+            color: #000000;
+        }
+        .navbar-custom {
+            background-color: #2a48ce; /* 海洋的浅蓝色 */
+            border-color: #2a48ce;
+        }
+        .navbar-custom .navbar-brand,
+        .navbar-custom .navbar-nav > li > a {
+            color: #ffffff;
+        }
+        .station-description {
+            font-size: 16px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/home">洋流洞察</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a href="/dataimport">数据导入</a></li>
+                <li><a href="/datasearch">数据查询</a></li>
+                <li><a href="/dataanalyse">数据分析</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/personal"><span class="glyphicon glyphicon-user"></span> 个人中心</a></li>
+                <li><a href="{% url 'logout' %}"><span class="glyphicon glyphicon-log-out"></span> 退出登录</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <h2>数据查询</h2>
+                <form method="post" style="margin-bottom: 20px;">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    {% if results %}
+                        <input type="hidden" name="data_id" value="{{ results.CurrentID }}">
+                        <button type="submit" class="btn btn-primary">查询</button>
+                        <button type="submit" class="btn btn-danger" name="delete" value="delete">删除</button>
+                        <a href="{% url 'edit' results.CurrentID %}" class="btn btn-warning">修改</a>
+                        {% else %}
+                        <button type="submit" class="btn btn-primary">查询</button>
+                    {% endif %}
+                </form>
+
+                <!-- 消息显示区域 -->
+                {% if messages %}
+                <div class="alert alert-warning" role="alert">
+                    {% for message in messages %}
+                        {{ message }}
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% if results %}
+                    <h3>查询结果</h3>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Latitude</th>
+                                <th>Longitude</th>
+                                <th>Visibility</th>
+                                <th>Air temperature</th>
+                                <th>Wind direction</th>
+                                <th>Wind speed</th>
+                                <th>Air pressure</th>
+                                <th>Sea temperature</th>
+                                <th>Wind wave height</th>
+                                <th>Wind wave period</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{ results.latitude }}°N</td>
+                                <td>{{ results.longitude }}°E</td>
+                                <td>{{ results.visibility }}km</td>
+                                <td>{{ results.air_temperature }}℃</td>
+                                <td>{{ results.wind_direction }}°</td>
+                                <td>{{ results.wind_speed }}m/s</td>
+                                <td>{{ results.air_pressure }}hpa</td>
+                                <td>{{ results.sea_temperature }}℃</td>
+                                <td>{{ results.wind_wave_height }}m</td>
+                                <td>{{ results.wind_wave_period }}s</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p>9 means no observation!</p>
+                {% endif %}
+            </div>
+            
+            <div class="col-md-4">
+                <!-- {% load static %}
+                <img src="{% static 'img/datasearch.png' %}" alt="查询说明图片" class="img-responsive"> -->
+                <div id="allmap"></div>
+            </div>
+        </div>
+        {% if results %}
+        <h3>洋流分析</h3>
+        <div class="panel panel-default">
+            <div class="panel-body station-description">
+                {{ station_description|linebreaksbr }}
+            </div>
+        </div>
+        {% endif %}       
+    </div>
+    
+</body>
+</html>
+<!-- <script type="text/javascript">
+	var map = new BMapGL.Map("allmap");    // 创建Map实例
+	map.centerAndZoom(new BMapGL.Point(106.08281,36.605113), 5);  // 初始化地图,设置中心点坐标和地图级别
+	map.enableScrollWheelZoom(true); 
+	map.setMapType(BMAP_SATELLITE_MAP);      // 设置地图类型为普通卫星地图模式
+</script> -->
+<script type="text/javascript">
+    window.onload = function() {
+        var map = new BMapGL.Map("allmap");    // 创建Map实例
+        map.centerAndZoom(new BMapGL.Point(116.08281, 29.605113), 5);  // 初始化地图,设置中心点坐标和地图级别
+        map.enableScrollWheelZoom(true); 
+        map.setMapType(BMAP_SATELLITE_MAP);      // 设置地图类型为普通卫星地图模式
+
+        // 添加标记
+        var points = [
+            {lng: 117.5, lat: 23.8, name: "DSN"},
+            {lng: 119.4, lat: 34.8, name: "LYG"},
+            {lng: 122.8, lat: 30.8, name: "SSN"},
+            {lng: 122.7, lat: 39.2, name: "XCS"},
+            {lng: 121.4, lat: 37.6, name: "ZFD"},
+            {lng: 115.6, lat: 22.7, name: "ZLG"},
+            {lng: 120.3, lat: 26.7, name: "BSG"},
+            {lng: 120.4, lat: 36.0, name: "XMD"},
+        ];
+
+        for (var i = 0; i < points.length; i++) {
+            var point = new BMapGL.Point(points[i].lng, points[i].lat);
+            var marker = new BMapGL.Marker(point);
+            map.addOverlay(marker);
+
+            var label = new BMapGL.Label(points[i].name, {
+                position: point,    // 指定文本标注所在的地理位置
+                offset: new BMapGL.Size(5, -10)    // 设置文本偏移量
+            });
+            label.setStyle({
+                color: "#fff",
+                fontSize: "10px",
+                height: "10px",
+                lineHeight: "10px",
+                fontFamily: "微软雅黑"
+            });
+            map.addOverlay(label);
+        }
+    }
+</script>

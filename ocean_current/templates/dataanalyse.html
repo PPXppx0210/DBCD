@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>数据分析</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            padding-top: 70px; /* 导航栏的高度 */
+        }
+        .container-fluid .col-md-8 {
+            width: 60%;
+            margin-top: -20px;
+        }
+        .container-fluid .col-md-4 {
+            width: 40%;
+            margin-top: -20px;
+        }
+        .navbar-custom {
+            background-color: #2a48ce; /* 海洋的浅蓝色 */
+            border-color: #2a48ce;
+        }
+        .navbar-custom .navbar-brand,
+        .navbar-custom .navbar-nav > li > a {
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/home">洋流洞察</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a href="/dataimport">数据导入</a></li>
+                <li><a href="/datasearch">数据查询</a></li>
+                <li><a href="/dataanalyse">数据分析</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/personal"><span class="glyphicon glyphicon-user"></span> 个人中心</a></li>
+                <li><a href="{% url 'logout' %}"><span class="glyphicon glyphicon-log-out"></span> 退出登录</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2>数据分析</h2>
+        <form method="post" class="form-inline">
+            {% csrf_token %}
+            <div class="form-group">
+                {{ form.station.label_tag }}
+                {{ form.station }}
+            </div>
+            <div class="form-group">
+                {{ form.dimension.label_tag }}
+                {{ form.dimension }}
+            </div>
+            <div class="form-group">
+                {{ form.date.label_tag }}
+                {{ form.date }}
+            </div>
+            <div class="form-group">
+                {{ form.month.label_tag }}
+                {{ form.month }}
+            </div>
+            <button type="submit" class="btn btn-primary">分析</button>
+        </form>
+
+        {% if form.errors %}
+            <div class="alert alert-danger" role="alert" style="margin-top: 20px;">
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if plot_url %}
+            <h3>数据趋势</h3>
+            <img src="data:image/png;base64,{{ plot_url }}" alt="数据趋势图">
+        {% endif %}
+
+        {% if analysis_results %}
+            <h3>参考信息（该站点在当前数据维度的历史统计）</h3>
+            <ul>
+                <li>平均值: {{ analysis_results.average }}</li>
+                <li>最大值: {{ analysis_results.max }}</li>
+                <li>最小值: {{ analysis_results.min }}</li>
+                <li>方差: {{ analysis_results.variance }}</li>
+                <li>标准差: {{ analysis_results.std_dev }}</li>
+            </ul>
+        {% endif %}
+
+        {% if messages %}
+            <div class="alert alert-warning" role="alert" style="margin-top: 20px;">
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

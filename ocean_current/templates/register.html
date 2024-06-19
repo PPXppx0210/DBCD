@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    {% load static %}
+    <style>
+        body {
+            background: url("{% static 'img/register2.jpg' %}");
+            background-size: cover;
+        }
+        .form-register {
+            max-width: 330px;
+            padding: 15px;
+            margin: 0 auto;
+        }
+        .form-register .form-control {
+            position: relative;
+            box-sizing: border-box;
+            height: auto;
+            padding: 10px;
+            font-size: 16px;
+        }
+        .form-register input[type="text"],
+        .form-register input[type="password"],
+        .form-register input[type="email"],
+        .form-register select {
+            margin-bottom: 10px;
+        }
+        .modal-dialog {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin-top: -10%;
+        }
+        .modal-dialog-centered {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: -10%;
+        }
+        .modal-content {
+            width: 80%;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <form class="form-register" method="POST" role="form">
+        {% csrf_token %}
+        <center>
+            <h2 class="form-register-heading">创建您的账户</h2>
+        </center>
+        <label for="inputUsername" class="sr-only">用户名</label>
+        <input type="text" id="inputUsername" name="inputUsername" class="form-control" placeholder="用户名" required autofocus>
+        <label for="inputPassword" class="sr-only">密码</label>
+        <input type="password" id="inputPassword" name="inputPassword" class="form-control" placeholder="密码" required>
+        <label for="inputIdentity" class="sr-only">身份</label>
+        <select id="inputIdentity" name="inputIdentity" class="form-control" required>
+            <option value="" selected disabled>选择身份</option>
+            <option value="tourist">普通游客</option>
+            <option value="researcher">科研人员</option>
+            <option value="manager">管理人员</option>
+        </select>
+        <label for="inputName" class="sr-only">真实姓名</label>
+        <input type="text" id="inputName" name="inputName" class="form-control" placeholder="真实姓名" required>
+        <label for="inputGender" class="sr-only">性别</label>
+        <select id="inputGender" name="inputGender" class="form-control" required>
+            <option value="" selected disabled>选择性别</option>
+            <option value="male">男</option>
+            <option value="female">女</option>
+        </select>
+        <label for="inputIDNumber" class="sr-only">身份证号</label>
+        <input type="text" id="inputIDNumber" name="inputIDNumber" class="form-control" placeholder="身份证号" required>
+        <label for="inputPhoneNumber" class="sr-only">手机号码</label>
+        <input type="text" id="inputPhoneNumber" name="inputPhoneNumber" class="form-control" placeholder="手机号码" required>
+        <label for="inputEmail" class="sr-only">电子邮箱</label>
+        <input type="email" id="inputEmail" name="inputEmail" class="form-control" placeholder="电子邮箱" required>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">注册</button>
+    </form>
+</div>
+
+<!-- 模态框 -->
+<div id="successModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <!-- 模态框内容-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">注册成功</h4>
+            </div>
+            <div class="modal-body text-center">
+                <p>您的账户已成功创建！</p>
+                <a href="/" class="btn btn-primary">
+                    <span class="glyphicon glyphicon-arrow-right"></span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    {% if user_registered %}
+        $('#successModal').modal('show');
+    {% endif %}
+</script>
+
+</body>
+</html>

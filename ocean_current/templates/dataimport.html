@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>数据导入</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            padding-top: 70px; /* 导航栏的高度 */
+        }
+        .sidebar {
+            padding: 20px;
+        }
+        .content {
+            padding: 20px;
+        }
+        .container-fluid .col-md-8 {
+            width: 60%;
+            margin-top: -20px;
+        }
+        .container-fluid .col-md-4 {
+            width: 40%;
+            margin-top: -20px;
+        }
+        .more_style {
+            float: right; 
+            color: #000000;
+        }
+        .navbar-custom {
+            background-color: #2a48ce; /* 海洋的浅蓝色 */
+            border-color: #2a48ce;
+        }
+        .navbar-custom .navbar-brand,
+        .navbar-custom .navbar-nav > li > a {
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/home">洋流洞察</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a href="/dataimport">数据导入</a></li>
+                <li><a href="/datasearch">数据查询</a></li>
+                <li><a href="/dataanalyse">数据分析</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/personal"><span class="glyphicon glyphicon-user"></span> 个人中心</a></li>
+                <li><a href="{% url 'logout' %}"><span class="glyphicon glyphicon-log-out"></span> 退出登录</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2>上传数据文件</h2>
+        
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">上传</button>
+        </form>
+
+        <!-- 消息显示区域
+        {% if messages %}
+            <div class="alert alert-danger" role="alert">
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            </div>
+        {% endif %} -->
+    </div>
+
+    <div class="container">
+        <h2>数据格式说明</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Column</th>
+                    <th>Parameter</th>
+                    <th>Description</th>
+                    <th>Unit</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1-15</td>
+                    <td>Station</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>16-19</td>
+                    <td>Date</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>20-23</td>
+                    <td>Time</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>24-29</td>
+                    <td>Lat.</td>
+                    <td>Accuracy: 0.01 (°)</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>30-36</td>
+                    <td>Long.</td>
+                    <td>Accuracy: 0.01 (°)</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>37-43</td>
+                    <td>Visibility</td>
+                    <td>Accuracy: 0.1</td>
+                    <td>km</td>
+                </tr>
+                <tr>
+                    <td>44-50</td>
+                    <td>Air Temperature</td>
+                    <td>Accuracy: 0.1</td>
+                    <td>℃</td>
+                </tr>
+                <tr>
+                    <td>51-57</td>
+                    <td>Wind Direction</td>
+                    <td>Accuracy: 0.1</td>
+                    <td>°</td>
+                </tr>
+                <tr>
+                    <td>58-64</td>
+                    <td>Wind Speed</td>
+                    <td>9 means no observation</td>
+                    <td>m/s</td>
+                </tr>
+                <tr>
+                    <td>65-71</td>
+                    <td>Air Pressure</td>
+                    <td>Accuracy: 0.1</td>
+                    <td>hpa</td>
+                </tr>
+                <tr>
+                    <td>72-77</td>
+                    <td>During Past 6 Hours Precipitation</td>
+                    <td>Accuracy: 0.1</td>
+                    <td>mm</td>
+                </tr>
+                <tr>
+                    <td>78-83</td>
+                    <td>Sea Temperature</td>
+                    <td>Accuracy: 0.1</td>
+                    <td>℃</td>
+                </tr>
+                <tr>
+                    <td>84-89</td>
+                    <td>Wind Wave Height</td>
+                    <td>Accuracy: 0.1</td>
+                    <td>m</td>
+                </tr>
+                <tr>
+                    <td>90-95</td>
+                    <td>Wind Wave Period</td>
+                    <td>Accuracy: 0.1</td>
+                    <td>s</td>
+                </tr>
+                <tr>
+                    <td>96-101</td>
+                    <td>Surge Height</td>
+                    <td>Accuracy: 0.1</td>
+                    <td>m</td>
+                </tr>
+                <tr>
+                    <td>102-107</td>
+                    <td>Surge Period</td>
+                    <td>Accuracy: 0.1</td>
+                    <td>s</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 模态框 -->
+    <div class="modal fade" id="uploadSuccessModal" tabindex="-1" role="dialog" aria-labelledby="uploadSuccessModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="uploadSuccessModalLabel">上传成功</h4>
+                </div>
+                <div class="modal-body">
+                    数据上传成功！
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 失败模态框 -->
+    <div class="modal fade" id="uploadFailModal" tabindex="-1" role="dialog" aria-labelledby="uploadFailModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="uploadFailModalLabel">上传失败</h4>
+                </div>
+                <div class="modal-body">
+                    数据上传失败，请检查文件格式并重试。
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        {% if upload_success is not None %}
+            {% if upload_success %}
+                $(document).ready(function() {
+                    $('#uploadSuccessModal').modal('show');
+                });
+            {% else %}
+                $(document).ready(function() {
+                    $('#uploadFailModal').modal('show');
+                });
+            {% endif %}
+        {% endif %}
+    </script>
+</body>
+</html>
